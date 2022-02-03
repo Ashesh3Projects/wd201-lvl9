@@ -1,0 +1,21 @@
+{% load static %}
+{% load tailwind_tags %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
+    {% tailwind_css %}
+    <link href="{% static 'style.css' %}" rel="stylesheet" />
+    <title>{% block title %}Task Manager{% endblock %}</title>
+</head>
+
+<body class="pt-16">
+    <div class="flex flex-col justify-center items-center">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+
+</html>

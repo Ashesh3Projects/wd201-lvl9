@@ -1,0 +1,8 @@
+Django
+django-tailwind
+django-browser-reload
+djangorestframework
+django-filter
+drf-nested-routers
+celery==4.4.7
+redis
