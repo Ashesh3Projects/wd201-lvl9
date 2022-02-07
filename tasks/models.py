@@ -39,6 +39,7 @@ class TaskStatusChange(models.Model):
 class UserPreferences(models.Model):
     reminder_enabled = models.BooleanField(default=False)
     reminder_time = models.TimeField(default="00:00:00")
+    last_sent = models.DateTimeField(null=True, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def __str__(self):
