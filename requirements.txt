@@ -6,3 +6,4 @@ django-filter
 drf-nested-routers
 celery==4.4.7
 redis
+coverage
