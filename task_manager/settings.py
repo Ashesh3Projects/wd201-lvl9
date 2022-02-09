@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     "tailwind",
     "theme",
     "django_browser_reload",
+    "rest_framework",
+    "django_filters"
 ]
 
 MIDDLEWARE = [
@@ -40,7 +42,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
 
 ROOT_URLCONF = "task_manager.urls"
@@ -117,9 +118,9 @@ STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_REDIRECT_URL = "/tasks"
-LOGIN_URL = "/user/login"
-LOGOUT_REDIRECT_URL = "/user/login"
+LOGIN_REDIRECT_URL = "/tasks/"
+LOGIN_URL = "/user/login/"
+LOGOUT_REDIRECT_URL = "/user/login/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "tasks/static/")]

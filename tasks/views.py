@@ -23,7 +23,7 @@ class AuthorisationCheck(LoginRequiredMixin):
 class UserLoginView(LoginView):
     template_name = "login.html"
     redirect_authenticated_user = True
-    success_url = "/tasks"
+    success_url = "/tasks/"
 
 
 class UserLogoutView(LoginRequiredMixin, LogoutView):
@@ -34,7 +34,7 @@ class UserLogoutView(LoginRequiredMixin, LogoutView):
 class UserCreateView(CreateView):
     form_class = UserCreationForm
     template_name = "signup.html"
-    success_url = "/user/login"
+    success_url = "/user/login/"
 
 
 class TaskView(LoginRequiredMixin, ListView):
@@ -97,7 +97,7 @@ class PreferencesForm(ModelForm):
 class TaskCreateView(LoginRequiredMixin, CreateView):
     form_class = TaskCreateForm
     template_name = "task_create.html"
-    success_url = "/tasks"
+    success_url = "/tasks/"
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -109,7 +109,7 @@ class UpdateTaskView(AuthorisationCheck, UpdateView):
     model = Task
     form_class = TaskCreateForm
     template_name = "task_edit.html"
-    success_url = "/tasks"
+    success_url = "/tasks/"
 
     def get_queryset(self):
         return Task.objects.filter(deleted=False, user=self.request.user)
@@ -120,7 +120,7 @@ class UpdateTaskView(AuthorisationCheck, UpdateView):
 
 
 class DeleteTaskView(AuthorisationCheck, DeleteView):
-    success_url = "/tasks"
+    success_url = "/tasks/"
     model = Task
     template_name = "task_delete.html"
 
@@ -130,15 +130,15 @@ class DeleteTaskView(AuthorisationCheck, DeleteView):
 
 def toggle_complete_task(request, pk):
     if not request.user.is_authenticated:
-        return HttpResponseRedirect("/user/login")
+        return HttpResponseRedirect("/user/login/")
     task = Task.objects.filter(id=pk, deleted=False, user=request.user)
     if task.exists():
         task.update(completed=not task[0].completed)
-    return HttpResponseRedirect("/tasks")
+    return HttpResponseRedirect("/tasks/")
 
 
 def index_page(request):
-    return HttpResponseRedirect("/tasks")
+    return HttpResponseRedirect("/tasks/")
 
 
 class TaskStatusChangeViewAPI(ReadOnlyModelViewSet):
@@ -201,7 +201,7 @@ class TaskViewSetAPI(ModelViewSet):
 class PreferencesView(LoginRequiredMixin, UpdateView):
     form_class = PreferencesForm
     template_name = "preferences.html"
-    success_url = "/tasks"
+    success_url = "/tasks/"
 
     def get_object(self):
         tasks = UserPreferences.objects.get_or_create(user=self.request.user)[0]
