@@ -140,3 +140,5 @@ CELERYBEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_HOST_USER = "tasks@task_manager.org"
+
+ALLOWED_HOSTS = ["*"]
