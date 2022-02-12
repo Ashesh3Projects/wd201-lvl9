@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from urllib.parse import urlencode
 
 from django.contrib.auth.models import User
-from django.test import Client, RequestFactory, TestCase
+from django.test import Client, RequestFactory, TestCase, override_settings
 from django.utils.timezone import make_aware
 
 from .models import Task, TaskStatusChange, UserPreferences
@@ -283,6 +283,21 @@ class CeleryTests(TestCase):
 
         self.assertEqual(
             email, "Hello test!\n\nHere is your tasks summary:\n\n1 pending task(s).\n\n1 in_progress task(s).\n\n1 completed task(s).\n\n1 cancelled task(s).\n\n\nThank you!")
+
+    def test_no_users_report(self):
+        reports_sent = send_reports.apply()
+        self.assertEqual(reports_sent.result, 0)
+
+    @override_settings(EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend')
+    def test_invalid_smtp_email(self):
+        Task.objects.create(user=self.user, title="Task 1", priority=1)
+        UserPreferences.objects.create(user=self.user, reminder_enabled=True, reminder_time=make_aware(datetime.now() - timedelta(seconds=10)).time())
+
+        User.objects.filter(username="test").update(email=".@.")
+
+        failed_msg = send_reports.apply()
+
+        self.assertEqual(failed_msg.result.strerror, 'Cannot assign requested address')
 
 
 class MiscellaneousTests(TestCase):

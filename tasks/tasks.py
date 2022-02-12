@@ -30,6 +30,7 @@ def send_reports():
 
     if len(new_and_missing_users) == 0:
         print("No matching users found")
+        return 0
 
     for user_prefs in new_and_missing_users:
         print("Processing", user_prefs.user)
@@ -38,5 +39,6 @@ def send_reports():
             send_mail("Tasks summary", email_content, "tasks@task_manager.org", [user_prefs.user.email], fail_silently=False,)
             user_prefs.last_sent = make_aware(datetime.now())
             user_prefs.save()
-        except SMTPException as e:
+        except Exception as e:
             print("Error sending email", e)
+            return e
