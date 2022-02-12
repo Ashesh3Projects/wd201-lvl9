@@ -6,7 +6,7 @@ from django.test import Client, RequestFactory, TestCase
 from django.utils.timezone import make_aware
 
 from .models import Task, TaskStatusChange, UserPreferences
-from .tasks import process_email, process_missing_users, send_reports
+from .tasks import get_email_content, send_reports
 
 
 class ViewTests(TestCase):
@@ -257,7 +257,7 @@ class CeleryTests(TestCase):
     def test_daily_reminder(self):
         Task.objects.create(user=self.user, title="Task 1", priority=1)
 
-        UserPreferences.objects.create(user=self.user, reminder_enabled=True, reminder_time=(datetime.now() - timedelta(seconds=10)).time())
+        UserPreferences.objects.create(user=self.user, reminder_enabled=True, reminder_time=make_aware(datetime.now() - timedelta(seconds=10)).time())
 
         send_reports.apply()
 
@@ -267,9 +267,9 @@ class CeleryTests(TestCase):
         Task.objects.create(user=self.user, title="Task 1", priority=1)
 
         UserPreferences.objects.create(user=self.user, reminder_enabled=True,
-                                       reminder_time=(datetime.now() - timedelta(seconds=10)).time(),
+                                       reminder_time=make_aware(datetime.now() - timedelta(seconds=10)).time(),
                                        last_sent=make_aware(datetime.now() - timedelta(days=1)))
-        process_missing_users.apply()
+        send_reports.apply()
 
         self.assertLessEqual(UserPreferences.objects.get(user=self.user).last_sent, make_aware(datetime.now()))
 
@@ -279,7 +279,7 @@ class CeleryTests(TestCase):
         Task.objects.create(user=self.user, title="Task 3", priority=3, status="COMPLETED", completed=True)
         Task.objects.create(user=self.user, title="Task 4", priority=4, status="CANCELLED")
 
-        email = process_email(self.user)
+        email = get_email_content(self.user)
 
         self.assertEqual(
             email, "Hello test!\n\nHere is your tasks summary:\n\n1 pending task(s).\n\n1 in_progress task(s).\n\n1 completed task(s).\n\n1 cancelled task(s).\n\n\nThank you!")
