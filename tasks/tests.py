@@ -297,7 +297,7 @@ class CeleryTests(TestCase):
 
         failed_msg = send_reports.apply()
 
-        self.assertEqual(failed_msg.result.strerror, 'Cannot assign requested address')
+        self.assertEqual(failed_msg.result.strerror, 'Cannot assign requested address' or 'Connection refused')
 
 
 class MiscellaneousTests(TestCase):
